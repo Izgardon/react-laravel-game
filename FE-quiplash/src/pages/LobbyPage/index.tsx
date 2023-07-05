@@ -1,10 +1,15 @@
 import React from "react";
+import axios from "axios";
 import "./LobbyPage.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import ListGroup from "react-bootstrap/ListGroup";
 
 function LobbyPage() {
+  const getQuips = async () => {
+    const { data } = await axios.get("http://localhost:8000/api/quips");
+    console.log(data);
+  };
   return (
     <div className="lobby-container">
       <Row className="row-width">
@@ -22,7 +27,7 @@ function LobbyPage() {
         </Col>
         <Col lg={6} sm={12}>
           <div className="right-container d-md-none d-none d-lg-block">
-            <h1>Players:</h1>
+            <h1 onClick={getQuips}>Players:</h1>
             <div className="player-list">
               <div className="player-list-item"></div>
             </div>
