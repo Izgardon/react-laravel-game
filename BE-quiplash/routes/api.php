@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuipController;
 
 /*
@@ -14,5 +15,9 @@ use App\Http\Controllers\QuipController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+//Quip routes
 Route::get('quips', [QuipController::class, 'index']);
+
+//Game routes
+Route::post('createGame', [GameController::class, 'create']);
+Route::post('joinGame', [GameController::class, 'join']);
