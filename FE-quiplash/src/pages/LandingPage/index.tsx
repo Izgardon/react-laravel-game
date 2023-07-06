@@ -21,10 +21,14 @@ function LandingPage({}: Props) {
   };
 
   //Creating Room Logic
-  const createGame = (): void => {
+  const createGame = async () => {
     //Check local storage to see if game already created
-    //If not send request to create game and navigate to lobby page
-    navigate("/lobby");
+    try {
+      await axios.post("http://localhost:8000/api/createGame");
+      navigate("/lobby");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   //Joining Room Logic
@@ -42,17 +46,32 @@ function LandingPage({}: Props) {
     }
   };
 
-  const joinRoom = (code: string) => {
+  const joinRoom = async (code: string) => {
     //Make call to see if code works
-
-    //If it does - navigate to room page
-    if (code.length === 4) {
-      navigate("/lobby");
+    try {
+      let { data } = await axios.post(
+        `http://localhost:8000/api/joinGame`,
+        {
+          roomCode: "3658",
+        },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+      console.log(data);
+      if (data.message == "correct") {
+        navigate("/lobby");
+      } else {
+        handleError();
+      }
+    } catch (err) {
+      handleError();
     }
-    //If it doesnt, set error
-    else {
-      setRoomError("Invalid code");
-    }
+  };
+  const handleError = () => {
+    setRoomError("Invalid code");
   };
 
   return (
@@ -77,9 +96,8 @@ function LandingPage({}: Props) {
                   }}
                   className="game-button"
                 >
-                  {" "}
                   Join Game
-                </Button>{" "}
+                </Button>
               </>
             ) : (
               <>

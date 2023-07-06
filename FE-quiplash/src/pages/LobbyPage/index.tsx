@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import "./LobbyPage.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import ListGroup from "react-bootstrap/ListGroup";
+
+import { pusher } from "../../App";
 
 function LobbyPage() {
+  let channel;
+  useEffect(() => {
+    channel = pusher.subscribe("3658");
+    channel.bind("joinRoom", function (eventData: Object) {
+      console.log(eventData, "hi");
+    });
+  }, []);
+
   const getQuips = async () => {
     const { data } = await axios.get("http://localhost:8000/api/quips");
     console.log(data);

@@ -15,6 +15,8 @@ use App\Http\Controllers\QuipController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+
 //Quip routes
 Route::get('quips', [QuipController::class, 'index']);
 
