@@ -35,17 +35,28 @@ function LandingPage({}: Props) {
   };
 
   //Joining Room Logic
-  const [roomCode, setRoomCode] = useState<any | null>("");
+  const [Code, setCode] = useState<any | null>("");
+  const [playerName, setPlayerName] = useState<any | null>("");
   const [roomError, setRoomError] = useState<string>("");
 
-  const onRoomCodeChange = (event: any): void => {
+  const onCodeChange = (event: any): void => {
     event.preventDefault();
     if (event.target.value.length == 5) {
       return;
     } else if (event.target.value.length > 5) {
-      setRoomCode(event.target.value.slice(0, 4));
+      setCode(event.target.value.slice(0, 4));
     } else {
-      setRoomCode(event.target.value);
+      setCode(event.target.value);
+    }
+  };
+  const onPlayerNameChange = (event: any): void => {
+    event.preventDefault();
+    if (event.target.value.length == 15) {
+      return;
+    } else if (event.target.value.length > 15) {
+      setPlayerName(event.target.value.slice(0, 14));
+    } else {
+      setPlayerName(event.target.value);
     }
   };
 
@@ -55,7 +66,8 @@ function LandingPage({}: Props) {
       let { data } = await axios.post(
         `http://localhost:8000/api/joinGame`,
         {
-          roomCode: code,
+          playerName,
+          code,
         },
         {
           headers: {
@@ -65,6 +77,7 @@ function LandingPage({}: Props) {
       );
 
       if (data.message == "correct") {
+        dispatch(setRoomNumber(code));
         navigate("/lobby");
       } else {
         handleError();
@@ -105,10 +118,16 @@ function LandingPage({}: Props) {
             ) : (
               <>
                 <Form className="flex-col">
-                  <Form.Group className="mb-3" controlId="formBasicRoomCode">
+                  <Form.Group className="mb-3" controlId="formBasicCode">
                     <Form.Control
-                      value={roomCode}
-                      onChange={onRoomCodeChange}
+                      value={playerName}
+                      onChange={onPlayerNameChange}
+                      size="lg"
+                      placeholder="Enter your name"
+                    />
+                    <Form.Control
+                      value={Code}
+                      onChange={onCodeChange}
                       onKeyDown={(evt) =>
                         (evt.key === "e" && evt.preventDefault()) ||
                         (evt.key === "." && evt.preventDefault())
@@ -121,7 +140,7 @@ function LandingPage({}: Props) {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      joinRoom(roomCode);
+                      joinRoom(Code);
                     }}
                   >
                     Join

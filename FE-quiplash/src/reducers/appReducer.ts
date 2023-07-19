@@ -2,8 +2,8 @@ import { Reducer } from "redux";
 import { ActionType } from "../actions/actionTypes";
 
 interface AppState {
-  roomNumber: number | null;
-  roundNumber: number | null;
+  roomNumber: string | null;
+  roundNumber: string | null;
 }
 
 const initialState: AppState = {

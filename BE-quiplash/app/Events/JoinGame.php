@@ -28,7 +28,8 @@ class JoinGame
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastOn()
-    { return new PrivateChannel($this->roomCode);
+    { 
+        return new PrivateChannel($this->roomCode);
        
     }
 
