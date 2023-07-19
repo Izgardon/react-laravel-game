@@ -42,6 +42,7 @@ class PlayerController extends Controller
             Player::create($data);
 
             //Alerting other players of new player
+            
             event(new JoinGame($code));
             
             return ['message'=>'correct'];

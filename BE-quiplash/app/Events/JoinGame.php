@@ -11,28 +11,23 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class JoinGame
+class JoinGame implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $roomNumber;
+    public $code;
    
-    public function __construct($roomNumber)
+    public function __construct($code)
     {
-        $this->roomNumber = $roomNumber;
+      
+        $this->code = $code;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
     public function broadcastOn()
-    { 
-        return new PrivateChannel($this->roomNumber);
-       
-    }
-
+{
+    
+    return [$this->code];
+}
     public function broadcastAs()
   {
       return 'joinRoom';
