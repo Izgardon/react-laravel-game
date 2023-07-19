@@ -26,6 +26,11 @@ class PlayerController extends Controller
     {
         $code = $request->roomNumber;
         $playerName=$request->playerName;
+
+        $playerCount = Player::where('game_id', $code)->count();
+        if($playerCount >= 8){
+            return ['message'=>'full'];
+        }  
        
         $playerNameTaken = Player::where('name', $playerName)->first();
         if($playerNameTaken){

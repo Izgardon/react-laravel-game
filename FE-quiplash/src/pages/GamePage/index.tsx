@@ -5,26 +5,18 @@ import { useSelector } from "react-redux";
 import AppState from "../../types/AppState";
 import { pusher } from "../../App";
 
-import "./LobbyPage.css";
+import "./GamePage.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
-interface Player {
-  id: number;
-  name: string;
-}
-
-function LobbyPage() {
+function GamePage() {
   //General
   const navigate = useNavigate();
 
   //Store
   const roomNumber = useSelector((state: AppState) => state.roomNumber);
   const host = useSelector((state: AppState) => state.host);
-
-  //States
-  const [players, setPlayers] = useState<Player[]>([]);
 
   //Pusher channel
   let channel;
@@ -39,24 +31,26 @@ function LobbyPage() {
   const assignRoom = () => {
     if (roomNumber) {
       channel = pusher.subscribe(roomNumber);
-      channel.bind("joinRoom", joinRoom);
-      channel.bind("startGame", startGame);
+      channel.bind("joinRoom", (data) => {
+        joinRoom(data);
+      });
     } else {
       navigate("/");
     }
   };
 
-  //Loads players already in the game
+  /* //Loads players already in the game
   const loadPlayers = async () => {
     const { data } = await axios.get(
       `http://localhost:8000/api/getPlayers/${roomNumber}`
     );
 
     setPlayers([...data.players]);
-  };
+  }; */
 
   //Listens for new players and adds them in
-  const joinRoom = async () => {
+  const joinRoom = async (test: any) => {
+    console.log(test);
     const { data } = await axios.get(
       `http://localhost:8000/api/getPlayers/${roomNumber}`
     );
@@ -65,28 +59,7 @@ function LobbyPage() {
 
   //Starting the game
 
-  const onStartGame = async () => {
-    //Starting game and sending pusher notification to other players
-    await axios.post(`http://localhost:8000/api/startGame`, {
-      roomNumber,
-    });
-
-    navigate("/host", {
-      state: {
-        players: players,
-      },
-    });
-  };
-
-  const startGame = async () => {
-    if (!host) {
-      navigate("/game", {
-        state: {
-          players: players,
-        },
-      });
-    }
-  };
+  const startGame = () => {};
 
   const getQuips = async () => {
     const { data } = await axios.get("http://localhost:8000/api/quips");
@@ -118,8 +91,8 @@ function LobbyPage() {
                 </div>
               ))}
             </div>
-            {players.length > 0 && host ? (
-              <Button className="mt-5" onClick={onStartGame}>
+            {players.length > 2 && host ? (
+              <Button className="mt-5" onClick={startGame}>
                 Start Game
               </Button>
             ) : (
@@ -132,4 +105,4 @@ function LobbyPage() {
   );
 }
 
-export default LobbyPage;
+export default GamePage;

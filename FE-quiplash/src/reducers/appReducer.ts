@@ -4,7 +4,8 @@ import AppState from "../types/AppState";
 
 const initialState: AppState = {
   roomNumber: null,
-  roundNumber: null,
+  roundNumber: 0,
+  questionNumber: 0,
   host: false,
 };
 
@@ -19,6 +20,11 @@ const reducer: Reducer<AppState> = (state = initialState, action) => {
       return {
         ...state,
         roundNumber: action.payload,
+      };
+    case ActionType.SET_QUESTION_NUMBER:
+      return {
+        ...state,
+        questionNumber: action.payload,
       };
     case ActionType.SET_HOST:
       return {

@@ -23,6 +23,8 @@ Route::get('quips', [QuipController::class, 'index']);
 
 //Game routes
 Route::post('createGame', [GameController::class, 'store']);
+Route::post('startGame', [GameController::class, 'start']);
+Route::post('cleanData', [GameController::class, 'cleanData']);
 
 
 //Player routes

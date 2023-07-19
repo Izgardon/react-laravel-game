@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setRoomNumber, setHost } from "../../actions/appActions";
 import { useNavigate } from "react-router-dom";
@@ -16,8 +16,15 @@ function LandingPage({}: Props) {
   //General logic
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    cleanUpData();
+  }, []);
+
+  const cleanUpData = () => {
+    axios.post("http://localhost:8000/api/cleanData");
+  };
 
   //Form Logic
   const [showButtons, setShowButtons] = useState<boolean>(true);
@@ -101,6 +108,8 @@ function LandingPage({}: Props) {
         navigate("/lobby");
       } else if (data.message == "taken") {
         handleError("Name already taken");
+      } else if (data.message == "full") {
+        handleError("Room is full");
       } else {
         handleError("Invalid code");
       }

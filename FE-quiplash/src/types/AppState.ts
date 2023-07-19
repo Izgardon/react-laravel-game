@@ -1,6 +1,7 @@
 interface AppState {
   roomNumber: string | null;
-  roundNumber: string | null;
+  roundNumber: number | null;
+  questionNumber: number | null;
   host: boolean;
 }
 

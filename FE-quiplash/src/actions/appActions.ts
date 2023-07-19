@@ -10,6 +10,11 @@ interface SetRoundNumberAction {
   payload: string;
 }
 
+interface SetQuestionNumberAction {
+  type: ActionType.SET_QUESTION_NUMBER;
+  payload: string;
+}
+
 interface SetHostAction {
   type: ActionType.SET_HOST;
   payload: boolean;
@@ -24,6 +29,13 @@ export const setRoomNumber = (roomNumber: string): SetRoomNumberAction => ({
 export const setRoundNumber = (roundNumber: string): SetRoundNumberAction => ({
   type: ActionType.SET_ROUND_NUMBER,
   payload: roundNumber,
+});
+
+export const setQuestionNumber = (
+  questionNumber: string
+): SetQuestionNumberAction => ({
+  type: ActionType.SET_QUESTION_NUMBER,
+  payload: questionNumber,
 });
 
 export const setHost = (host: boolean): SetHostAction => ({
