@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setRoomNumber } from "../../actions/appActions";
+import { setRoomNumber, setHost } from "../../actions/appActions";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,12 +8,16 @@ import "./LandingPage.css";
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import ClipLoader from "react-spinners/ClipLoader";
 
 type Props = {};
 
 function LandingPage({}: Props) {
+  //General logic
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   //Form Logic
   const [showButtons, setShowButtons] = useState<boolean>(true);
@@ -25,12 +29,19 @@ function LandingPage({}: Props) {
   //Creating Room Logic
   const createGame = async () => {
     //Check local storage to see if game already created
+    setLoading(true);
     try {
+      //Generating room number
       let { data } = await axios.post("http://localhost:8000/api/createGame");
+      //Store logic
       dispatch(setRoomNumber(data.room));
+      dispatch(setHost(true));
+      //Navigating to next page
       navigate("/lobby");
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,13 +72,22 @@ function LandingPage({}: Props) {
   };
 
   const joinRoom = async (code: string) => {
+    //Final checks
+    if (playerName.length == 0) {
+      handleError("Please enter a name");
+      return;
+    } else if (code.length != 4) {
+      handleError("Please enter a correct code");
+      return;
+    }
+    setLoading(true);
     //Make call to see if code works
     try {
       let { data } = await axios.post(
-        `http://localhost:8000/api/joinGame`,
+        `http://localhost:8000/api/createPlayer`,
         {
           playerName,
-          code,
+          roomNumber: code,
         },
         {
           headers: {
@@ -79,15 +99,19 @@ function LandingPage({}: Props) {
       if (data.message == "correct") {
         dispatch(setRoomNumber(code));
         navigate("/lobby");
+      } else if (data.message == "taken") {
+        handleError("Name already taken");
       } else {
-        handleError();
+        handleError("Invalid code");
       }
     } catch (err) {
-      handleError();
+      handleError("Invalid code");
+    } finally {
+      setLoading(false);
     }
   };
-  const handleError = () => {
-    setRoomError("Invalid code");
+  const handleError = (message: string) => {
+    setRoomError(message);
   };
 
   return (
@@ -120,6 +144,7 @@ function LandingPage({}: Props) {
                 <Form className="flex-col">
                   <Form.Group className="mb-3" controlId="formBasicCode">
                     <Form.Control
+                      className="mb-2"
                       value={playerName}
                       onChange={onPlayerNameChange}
                       size="lg"
@@ -150,6 +175,12 @@ function LandingPage({}: Props) {
               </>
             )}
           </div>
+          <ClipLoader
+            loading={loading}
+            size={50}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
         </div>
       </div>
     </>

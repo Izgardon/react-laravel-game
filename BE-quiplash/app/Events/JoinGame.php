@@ -15,11 +15,11 @@ class JoinGame
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $roomCode;
+    public $roomNumber;
    
-    public function __construct($roomCode)
+    public function __construct($roomNumber)
     {
-        $this->roomCode = $roomCode;
+        $this->roomNumber = $roomNumber;
     }
 
     /**
@@ -29,7 +29,7 @@ class JoinGame
      */
     public function broadcastOn()
     { 
-        return new PrivateChannel($this->roomCode);
+        return new PrivateChannel($this->roomNumber);
        
     }
 

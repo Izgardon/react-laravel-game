@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuipController;
+use App\Http\Controllers\PlayerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +22,9 @@ use App\Http\Controllers\QuipController;
 Route::get('quips', [QuipController::class, 'index']);
 
 //Game routes
-Route::post('createGame', [GameController::class, 'create']);
-Route::post('joinGame', [GameController::class, 'join']);
+Route::post('createGame', [GameController::class, 'store']);
+
+
+//Player routes
+Route::get('getPlayers/{roomNumber}', [PlayerController::class, 'index']);
+Route::post('createPlayer', [PlayerController::class, 'store']);

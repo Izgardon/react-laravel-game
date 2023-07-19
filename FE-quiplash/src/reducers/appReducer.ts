@@ -1,14 +1,11 @@
 import { Reducer } from "redux";
 import { ActionType } from "../actions/actionTypes";
-
-interface AppState {
-  roomNumber: string | null;
-  roundNumber: string | null;
-}
+import AppState from "../types/AppState";
 
 const initialState: AppState = {
   roomNumber: null,
   roundNumber: null,
+  host: false,
 };
 
 const reducer: Reducer<AppState> = (state = initialState, action) => {
@@ -22,6 +19,11 @@ const reducer: Reducer<AppState> = (state = initialState, action) => {
       return {
         ...state,
         roundNumber: action.payload,
+      };
+    case ActionType.SET_HOST:
+      return {
+        ...state,
+        host: action.payload,
       };
     default:
       return state;

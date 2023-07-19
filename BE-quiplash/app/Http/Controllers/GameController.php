@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function create()
+    public function store()
     {
         do {
             $code = $this->createGameCode();
@@ -25,16 +25,6 @@ class GameController extends Controller
         return ['room'=>$code];
     }
 
-    public function join(Request $request)
-    {
-       
-        $existingGame = Game::where('game_id', $request->roomCode)->first();
-        $code = $request->roomCode;
-        if($existingGame){
-            event(new JoinGame($code));
-        }  
-        return ['message'=>'correct'];
-    }
 
     private function createGameCode() 
     {
