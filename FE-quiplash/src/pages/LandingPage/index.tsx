@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setRoomNumber } from "../../actions/appActions";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -12,6 +13,7 @@ type Props = {};
 
 function LandingPage({}: Props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   //Form Logic
   const [showButtons, setShowButtons] = useState<boolean>(true);
@@ -24,7 +26,8 @@ function LandingPage({}: Props) {
   const createGame = async () => {
     //Check local storage to see if game already created
     try {
-      await axios.post("http://localhost:8000/api/createGame");
+      let { data } = await axios.post("http://localhost:8000/api/createGame");
+      dispatch(setRoomNumber(data.room));
       navigate("/lobby");
     } catch (err) {
       console.log(err);
@@ -52,7 +55,7 @@ function LandingPage({}: Props) {
       let { data } = await axios.post(
         `http://localhost:8000/api/joinGame`,
         {
-          roomCode: "3658",
+          roomCode: code,
         },
         {
           headers: {
@@ -60,7 +63,7 @@ function LandingPage({}: Props) {
           },
         }
       );
-      console.log(data);
+
       if (data.message == "correct") {
         navigate("/lobby");
       } else {

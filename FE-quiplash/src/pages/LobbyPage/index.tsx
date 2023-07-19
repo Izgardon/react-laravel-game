@@ -1,19 +1,40 @@
 import React, { useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { AppState } from "../types/AppState";
+import { pusher } from "../../App";
+
 import "./LobbyPage.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import { pusher } from "../../App";
-
 function LobbyPage() {
+  const navigate = useNavigate();
+
+  //Store
+  const roomNumber = useSelector((state: AppState) => state.roomNumber);
+
+  //Pusher channel
   let channel;
+
   useEffect(() => {
-    channel = pusher.subscribe("3658");
-    channel.bind("joinRoom", function (eventData: Object) {
-      console.log(eventData, "hi");
-    });
+    assignRoom();
   }, []);
+
+  const assignRoom = () => {
+    console.log(roomNumber);
+    if (roomNumber) {
+      channel = pusher.subscribe(roomNumber);
+      channel.bind("joinRoom", joinRoom);
+    } else {
+      navigate("/");
+    }
+  };
+
+  const joinRoom = (eventData: Object) => {
+    console.log(eventData, "hi");
+  };
 
   const getQuips = async () => {
     const { data } = await axios.get("http://localhost:8000/api/quips");

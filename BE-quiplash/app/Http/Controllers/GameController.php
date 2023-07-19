@@ -22,6 +22,7 @@ class GameController extends Controller
         ];
     
         Game::create($data);
+        return ['room'=>$code];
     }
 
     public function join(Request $request)
