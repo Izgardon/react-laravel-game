@@ -96,26 +96,33 @@ class QuipController extends Controller
 
     }
 
-    private function assignQuipsToPlayers(array $quips, array $playerIds) {
+    private function assignQuipsToPlayers(array $quips, array $playerIds): array {
         shuffle($quips);
+        shuffle($playerIds);
         $assignedQuips = [];
     
         $quipCount = count($quips);
         $playerCount = count($playerIds);
-        dd( $playerCount);
         $quipsPerPlayer = 2;
     
         for ($i = 0; $i < $quipCount; $i++) {
             $quipIndex = $i % $quipCount;
             $playerId = $playerIds[$i % $playerCount];
     
-            if (!isset($assignedQuips[$playerId])) {
-                $assignedQuips[$playerId] = [];
-            }
-    
-            if (count($assignedQuips[$playerId]) < $quipsPerPlayer) {
-                $assignedQuips[$playerId][] = $quips[$quipIndex];
-            }
+            $assignedQuips[$playerId] = [];
+            
+            $assignedQuips[$playerId][] = $quips[$quipIndex];
+            
+        }
+        $element = array_pop( $playerIds );
+        array_unshift( $playerIds, $element );
+
+        for ($i = 0; $i < $quipCount; $i++) {
+            $quipIndex = $i % $quipCount;
+            $playerId = $playerIds[$i % $playerCount];
+             
+            $assignedQuips[$playerId][] = $quips[$quipIndex];
+            
         }
     
         return $assignedQuips;
