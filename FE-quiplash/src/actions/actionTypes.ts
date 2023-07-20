@@ -3,6 +3,7 @@ export enum ActionType {
   SET_ROUND_NUMBER = "SET_ROUND_NUMBER",
   SET_QUESTION_NUMBER = "SET_QUESTION_NUMBER",
   SET_HOST = "SET_HOST",
+  SET_PLAYERS = "SET_PLAYERS",
 }
 
 export default ActionType;

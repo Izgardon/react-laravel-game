@@ -1,4 +1,5 @@
 import { ActionType } from "./actionTypes";
+import AppState from "../types/AppState";
 
 interface SetRoomNumberAction {
   type: ActionType.SET_ROOM_NUMBER;
@@ -18,6 +19,11 @@ interface SetQuestionNumberAction {
 interface SetHostAction {
   type: ActionType.SET_HOST;
   payload: boolean;
+}
+
+interface SetPlayersAction {
+  type: ActionType.SET_PLAYERS;
+  payload: AppState["players"];
 }
 
 // Action creators
@@ -41,4 +47,9 @@ export const setQuestionNumber = (
 export const setHost = (host: boolean): SetHostAction => ({
   type: ActionType.SET_HOST,
   payload: host,
+});
+
+export const setPlayers = (players: any): SetPlayersAction => ({
+  type: ActionType.SET_PLAYERS,
+  payload: players,
 });

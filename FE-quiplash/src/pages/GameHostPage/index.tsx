@@ -1,73 +1,122 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import AppState from "../../types/AppState";
 import { pusher } from "../../App";
 
 import "./GameHostPage.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
+
+interface Player {
+  id: number;
+  name: string;
+}
 
 function GameHostPage() {
-  /*  //General
-  const navigate = useNavigate();
+  //General---------------------
+  let navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  //Store
+  //Store--------------------
   const roomNumber = useSelector((state: AppState) => state.roomNumber);
   const host = useSelector((state: AppState) => state.host);
+  const players = useSelector((state: AppState) => state.players);
 
-  //States
-  const [players, setPlayers] = useState<Player[]>([]);
+  //States--------------------
+  const [playersList, setPlayersList] = useState<Player[]>([]);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [round, setRound] = useState<number>(1);
 
-  //Pusher channel
+  //Variables---------------------
   let channel;
 
-  //Logic on page load
+  //useEffects-------------------
+
+  //On page load
   useEffect(() => {
     assignRoom();
-    loadPlayers();
+    if (host && players.length > 0) {
+      assignQuips();
+      setPlayersList([...players]);
+    }
   }, []);
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      handleTimerEnd();
+      return;
+    }
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  //Functions---------------
 
   //Checks room number and binds player to it
   const assignRoom = () => {
     if (roomNumber) {
-      console.log("working1");
       channel = pusher.subscribe(roomNumber);
-      channel.bind("joinRoom", joinRoom);
+      channel.bind("assignQuips", (data: any) => loadQuips(data));
     } else {
       navigate("/");
     }
   };
 
-  //Loads players already in the game
-  const loadPlayers = async () => {
-    const { data } = await axios.get(
-      `http://localhost:8000/api/getPlayers/${roomNumber}`
-    );
-
-    setPlayers([...data.players]);
+  const assignQuips = async () => {
+    let playerCount = players.length;
+    playerCount = 2;
+    await axios
+      .post(`http://localhost:8000/api/quips`, {
+        playerCount,
+        roomNumber,
+      })
+      .then(startTimer);
   };
 
-  //Listens for new players and adds them in
-  const joinRoom = async () => {
-    console.log("working2");
-    const { data } = await axios.get(
-      `http://localhost:8000/api/getPlayers/${roomNumber}`
-    );
-    setPlayers([...data.players]);
-  };
-
-  //Starting the game
-
-  const startGame = () => {};
-
-  const getQuips = async () => {
-    const { data } = await axios.get("http://localhost:8000/api/quips");
+  const loadQuips = (data: any) => {
     console.log(data);
-  }; */
-  return <div className="lobby-container"></div>;
+  };
+
+  const startTimer = () => {
+    setTimeLeft(10);
+  };
+
+  //Helper functions
+
+  const tick = () => {
+    if (timeLeft == null) return;
+    else if (timeLeft > 0) {
+      setTimeLeft(timeLeft - 1);
+    }
+  };
+
+  const handleTimerEnd = () => {
+    setRound(round + 1);
+  };
+
+  return (
+    <div className="game-container">
+      <Row className="row-width">
+        <Col className="timer-col" lg={12} sm={12}>
+          <div className="flex-apart">
+            <div>{timeLeft ? timeLeft : "0"}</div>
+            <div className="ml-auto">Round: {round}</div>
+          </div>
+        </Col>
+        <Col className="player-col" lg={12} sm={12}>
+          <div className="flex-row">
+            {playersList.map((player: any) => (
+              <div className="player-list-item" key={player.id}>
+                {player.name}
+              </div>
+            ))}
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
 export default GameHostPage;

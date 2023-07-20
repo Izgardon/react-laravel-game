@@ -1,4 +1,4 @@
-.lobby-container {
+.game-container {
   width: 100vw;
   background-color: red;
   height: 100vh !important;
@@ -8,20 +8,22 @@
   align-items: center;
 }
 
-.row-width {
-  width: 100%;
+.player-col {
+  padding-inline: 5rem !important;
+  margin-top: 25% !important;
 }
 
-.left-container {
-  max-width: 300px;
-  margin-inline: auto;
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  overflow: hidden;
 }
 
-.right-container {
-  max-width: 300px;
-}
-
-.list-item {
-  background-color: white !important;
-  border: 1px solid black !important;
+.flex-apart {
+  display: flex;
+  justify-content: space-between;
+  margin-inline: 2rem;
 }

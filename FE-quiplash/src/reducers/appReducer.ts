@@ -7,6 +7,7 @@ const initialState: AppState = {
   roundNumber: 0,
   questionNumber: 0,
   host: false,
+  players: [],
 };
 
 const reducer: Reducer<AppState> = (state = initialState, action) => {
@@ -30,6 +31,11 @@ const reducer: Reducer<AppState> = (state = initialState, action) => {
       return {
         ...state,
         host: action.payload,
+      };
+    case ActionType.SET_PLAYERS:
+      return {
+        ...state,
+        players: action.payload,
       };
     default:
       return state;
