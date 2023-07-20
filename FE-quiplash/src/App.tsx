@@ -8,6 +8,7 @@ import {
   GameHostPage,
 } from "./pages";
 import Pusher from "pusher-js";
+import "./Main.css";
 
 export const pusher = new Pusher("cc7c21ddb57af4f91251", {
   cluster: "eu",

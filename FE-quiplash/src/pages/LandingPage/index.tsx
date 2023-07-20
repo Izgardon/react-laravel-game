@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setRoomNumber, setHost } from "../../actions/appActions";
+import {
+  setRoomNumber,
+  setHost,
+  setActivePlayer,
+} from "../../actions/appActions";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -105,6 +109,7 @@ function LandingPage({}: Props) {
 
       if (data.message == "correct") {
         dispatch(setRoomNumber(code));
+        dispatch(setActivePlayer(data.player));
         navigate("/lobby");
       } else if (data.message == "taken") {
         handleError("Name already taken");

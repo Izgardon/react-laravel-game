@@ -4,6 +4,7 @@ export enum ActionType {
   SET_QUESTION_NUMBER = "SET_QUESTION_NUMBER",
   SET_HOST = "SET_HOST",
   SET_PLAYERS = "SET_PLAYERS",
+  SET_ACTIVE_PLAYER = "SET_ACTIVE_PLAYER",
 }
 
 export default ActionType;

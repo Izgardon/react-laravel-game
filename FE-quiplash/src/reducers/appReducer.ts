@@ -8,6 +8,7 @@ const initialState: AppState = {
   questionNumber: 0,
   host: false,
   players: [],
+  activePlayer: { id: null, name: null },
 };
 
 const reducer: Reducer<AppState> = (state = initialState, action) => {
@@ -33,6 +34,11 @@ const reducer: Reducer<AppState> = (state = initialState, action) => {
         host: action.payload,
       };
     case ActionType.SET_PLAYERS:
+      return {
+        ...state,
+        players: action.payload,
+      };
+    case ActionType.SET_ACTIVE_PLAYER:
       return {
         ...state,
         players: action.payload,

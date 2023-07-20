@@ -26,6 +26,11 @@ interface SetPlayersAction {
   payload: AppState["players"];
 }
 
+interface SetActivePlayerAction {
+  type: ActionType.SET_ACTIVE_PLAYER;
+  payload: AppState["activePlayer"];
+}
+
 // Action creators
 export const setRoomNumber = (roomNumber: string): SetRoomNumberAction => ({
   type: ActionType.SET_ROOM_NUMBER,
@@ -52,4 +57,9 @@ export const setHost = (host: boolean): SetHostAction => ({
 export const setPlayers = (players: any): SetPlayersAction => ({
   type: ActionType.SET_PLAYERS,
   payload: players,
+});
+
+export const setActivePlayer = (activePlayer: any): SetActivePlayerAction => ({
+  type: ActionType.SET_ACTIVE_PLAYER,
+  payload: activePlayer,
 });

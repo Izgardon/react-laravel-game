@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AppState from "../../types/AppState";
 import { pusher } from "../../App";
@@ -11,38 +11,81 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 
 function GamePage() {
-  //General
+  //General---------------
   const navigate = useNavigate();
 
-  //Store
+  //Store--------------
   const roomNumber = useSelector((state: AppState) => state.roomNumber);
-  const host = useSelector((state: AppState) => state.host);
+  const activePlayer = useSelector((state: AppState) => state.activePlayer);
+  const players = useSelector((state: AppState) => state.players);
 
-  //Pusher channel
+  //States--------------------
+  //Questions
+  const [questions, setQuestions] = useState<string[]>([]);
+  const [roundEnd, setRoundEnd] = useState<boolean>(false);
+  //Timers and rounds
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [round, setRound] = useState<number>(1);
+
+  //Variables---------------------
   let channel;
 
-  //Logic on page load
-  useEffect(() => {}, []);
+  //useEffects-------------------
+
+  useEffect(() => {
+    setUpChannelBinds();
+  }, []);
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      handleTimerEnd();
+      return;
+    }
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  useEffect(() => {}, [round]);
+
+  //Functions---------------
 
   //Checks room number and binds player to it
-  const assignRoom = () => {
+  const setUpChannelBinds = () => {
     if (roomNumber) {
       channel = pusher.subscribe(roomNumber);
-      channel.bind("joinRoom", (data) => {
-        joinRoom(data);
-      });
+      //All binds
+      channel.bind("assignQuips", (data: any) => loadQuips(data));
     } else {
       navigate("/");
     }
   };
 
   //Gets correct number of available quips
-  const getQuips = async () => {
-    const { data } = await axios.get("http://localhost:8000/api/quips");
+  const loadQuips = (data: any) => {
     console.log(data);
+    startTimer(10);
   };
 
-  return <div className="lobby-container"></div>;
+  const handleTimerEnd = () => {
+    setRound(round + 1);
+
+    setRoundEnd(!roundEnd);
+  };
+
+  //Helper functions
+
+  const startTimer = (time) => {
+    setTimeLeft(time);
+  };
+
+  const tick = () => {
+    if (timeLeft == null) return;
+    else if (timeLeft > 0) {
+      setTimeLeft(timeLeft - 1);
+    }
+  };
+
+  return <div className="lobby-container">{timeLeft}</div>;
 }
 
 export default GamePage;

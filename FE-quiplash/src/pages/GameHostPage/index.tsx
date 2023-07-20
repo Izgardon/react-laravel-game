@@ -26,6 +26,7 @@ function GameHostPage() {
 
   //States--------------------
   const [playersList, setPlayersList] = useState<Player[]>([]);
+  const [answeredPlayersList, setAnsweredPlayersList] = useState<Player[]>([]);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [round, setRound] = useState<number>(1);
 
@@ -36,8 +37,8 @@ function GameHostPage() {
 
   //On page load
   useEffect(() => {
-    assignRoom();
-    if (host && players.length > 0) {
+    setUpChannelBinds();
+    if (players.length > 0) {
       assignQuips();
       setPlayersList([...players]);
     }
@@ -52,17 +53,22 @@ function GameHostPage() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
+  useEffect(() => {}, [round]);
+
   //Functions---------------
 
   //Checks room number and binds player to it
-  const assignRoom = () => {
+  const setUpChannelBinds = () => {
     if (roomNumber) {
       channel = pusher.subscribe(roomNumber);
-      channel.bind("assignQuips", (data: any) => loadQuips(data));
+      //All binds
+      channel.bind("playerAnswered", (data: any) => playerAnswered(data));
     } else {
       navigate("/");
     }
   };
+
+  //General functions
 
   const assignQuips = async () => {
     let playerCount = players.length;
@@ -72,18 +78,19 @@ function GameHostPage() {
         playerCount,
         roomNumber,
       })
-      .then(startTimer);
+      .then(() => startTimer(10));
   };
 
-  const loadQuips = (data: any) => {
-    console.log(data);
-  };
-
-  const startTimer = () => {
-    setTimeLeft(10);
+  const playerAnswered = (data) => {
+    setAnsweredPlayersList([...answeredPlayersList, data.player]);
+    setPlayersList(playersList.filter((player) => player.id != data.player.id));
   };
 
   //Helper functions
+
+  const startTimer = (time) => {
+    setTimeLeft(time);
+  };
 
   const tick = () => {
     if (timeLeft == null) return;

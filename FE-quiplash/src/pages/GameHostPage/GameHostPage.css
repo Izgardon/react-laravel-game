@@ -1,6 +1,5 @@
 .game-container {
   width: 100vw;
-  background-color: red;
   height: 100vh !important;
   position: relative;
   display: flex;

@@ -33,12 +33,12 @@ function LobbyPage() {
 
   //Logic on page load
   useEffect(() => {
-    assignRoom();
+    setUpChannelBinds();
     loadPlayers();
   }, []);
 
   //Checks room number and binds player to it
-  const assignRoom = () => {
+  const setUpChannelBinds = () => {
     if (roomNumber) {
       channel = pusher.subscribe(roomNumber);
       channel.bind("joinRoom", loadPlayers);
@@ -94,7 +94,7 @@ function LobbyPage() {
         </Col>
         <Col lg={6} sm={12}>
           <div className="right-container d-md-none d-none d-lg-block">
-            <h1>Players:</h1>
+            <h1>Players ({playersList.length}/8):</h1>
             <div className="player-list">
               {playersList.map((player) => (
                 <div className="player-list-item" key={player.id}>

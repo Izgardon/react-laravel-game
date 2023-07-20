@@ -1,6 +1,6 @@
 interface Player {
-  id: number;
-  name: string;
+  id: number | null;
+  name: string | null;
 }
 
 interface AppState {
@@ -9,6 +9,7 @@ interface AppState {
   questionNumber: number | null;
   host: boolean;
   players: Player[];
+  activePlayer: Player;
 }
 
 export default AppState;
