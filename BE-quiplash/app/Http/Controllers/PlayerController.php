@@ -32,25 +32,27 @@ class PlayerController extends Controller
             return ['message'=>'full'];
         }  
        
-        $playerNameTaken = Player::where('name', $playerName)->first();
+        $playerNameTaken = Player::where('name', $playerName)->where('game_id',$code)->first();
         if($playerNameTaken){
             return ['message'=>'taken'];
         }  
-        $gameExists = Game::where('game_id', $code)->first();
+        $gameExists = Game::where('game_id', $code)->where('running', false)->first();
     
         if($gameExists){
-            $data = [
-                'name' => $playerName,
-                'game_id' => $code,
-            ];
+          
             //Creating the player
-            Player::create($data);
+            $player = new Player();
+            $player->name = $playerName;
+            $player->game_id = $code;
+        
+            $player->save();
 
             //Alerting other players of new player
             
             event(new JoinGame($code));
             
-            return ['message'=>'correct'];
+            return ['message'=>'correct','player'=>$player];
+        
         }  
     }
 }

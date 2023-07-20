@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
             $table->string('answer');
-            $table->string('player_name');
+            $table->foreignId('player_id')->references('id')
+            ->on('players');
+            $table->foreignId('quip_id')->references('id')
+            ->on('quips');
             $table->timestamps();
         });
     }

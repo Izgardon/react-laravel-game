@@ -19,7 +19,7 @@ use App\Http\Controllers\PlayerController;
 
 
 //Quip routes
-Route::get('quips', [QuipController::class, 'index']);
+Route::post('quips', [QuipController::class, 'assignQuips']);
 
 //Game routes
 Route::post('createGame', [GameController::class, 'store']);
