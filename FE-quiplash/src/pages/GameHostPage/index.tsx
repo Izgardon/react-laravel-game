@@ -72,7 +72,6 @@ function GameHostPage() {
 
   const assignQuips = async () => {
     let playerCount = players.length;
-    playerCount = 2;
     await axios
       .post(`http://localhost:8000/api/quips`, {
         playerCount,
