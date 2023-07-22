@@ -6,9 +6,10 @@ import AppState from "../../types/AppState";
 import { pusher } from "../../App";
 
 import "./GamePage.css";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
 
 function GamePage() {
   //General---------------
@@ -21,8 +22,10 @@ function GamePage() {
 
   //States--------------------
   //Questions
-  const [questions, setQuestions] = useState<string[]>([]);
-  const [roundEnd, setRoundEnd] = useState<boolean>(false);
+  const [quips, setQuips] = useState<any>([]);
+  const [roundQuips, setRoundQuips] = useState<string[]>([]);
+  const [roundEnd, setRoundEnd] = useState<boolean>(true);
+  const [answer, setAnswer] = useState<string>("");
   //Timers and rounds
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [round, setRound] = useState<number>(1);
@@ -62,19 +65,29 @@ function GamePage() {
 
   //Gets correct number of available quips
   const loadQuips = (data: any) => {
-    console.log(data);
-    startTimer(10);
+    setQuips(data.quips);
+    /* let round1 = data?.quips.round1.find(
+      (player: AppState["activePlayer"]) => (player.id = activePlayer.id)
+    ); */
+    let activePlayerId = activePlayer.id;
+    if (activePlayerId) {
+      let round1 = data.quips.round1[activePlayerId];
+      setRoundQuips(round1);
+      setRoundEnd(false);
+      startTimer(data.time);
+    } else {
+      navigate("/");
+    }
   };
 
   const handleTimerEnd = () => {
     setRound(round + 1);
-
-    setRoundEnd(!roundEnd);
+    setRoundEnd(true);
   };
 
   //Helper functions
 
-  const startTimer = (time) => {
+  const startTimer = (time: any) => {
     setTimeLeft(time);
   };
 
@@ -85,7 +98,41 @@ function GamePage() {
     }
   };
 
-  return <div className="lobby-container">{timeLeft}</div>;
+  const onAnswerChange = (event: any) => {
+    setAnswer(event.target.value);
+  };
+
+  return (
+    <div className="lobby-container">
+      {roundEnd ? (
+        <>
+          <div>Round over!</div>
+        </>
+      ) : (
+        <>
+          <div className="question-form">
+            <div className="time">{timeLeft}</div>
+            <Form className="flex-col">
+              <Form.Group className="mb-3" controlId="formBasicCode">
+                <Form.Control
+                  className="mb-2"
+                  value={answer}
+                  onChange={onAnswerChange}
+                  size="lg"
+                  placeholder="Enter your answer"
+                  as="textarea"
+                  maxLength={50}
+                />
+              </Form.Group>
+              <Button variant="primary" onClick={() => {}}>
+                Join
+              </Button>
+            </Form>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
 export default GamePage;

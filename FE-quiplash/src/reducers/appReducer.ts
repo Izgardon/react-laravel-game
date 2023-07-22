@@ -41,7 +41,7 @@ const reducer: Reducer<AppState> = (state = initialState, action) => {
     case ActionType.SET_ACTIVE_PLAYER:
       return {
         ...state,
-        players: action.payload,
+        activePlayer: action.payload,
       };
     default:
       return state;

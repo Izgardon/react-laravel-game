@@ -47,11 +47,13 @@ class PlayerController extends Controller
         
             $player->save();
 
+            $returnPlayer = Player::where('id', $player->id)->select('id','name')->first();
+
             //Alerting other players of new player
             
             event(new JoinGame($code));
             
-            return ['message'=>'correct','player'=>$player];
+            return ['message'=>'correct','player'=>$returnPlayer];
         
         }  
     }

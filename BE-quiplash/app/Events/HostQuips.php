@@ -11,7 +11,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class AssignQuips implements ShouldBroadcastNow
+class HostQuips implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -25,6 +25,7 @@ class AssignQuips implements ShouldBroadcastNow
         $this->code = $code;
         $this->quips = $quips;
         $this->time = $time;
+        
     }
 
     public function broadcastOn()
@@ -34,6 +35,6 @@ class AssignQuips implements ShouldBroadcastNow
 }
     public function broadcastAs()
   {
-      return 'assignQuips';
+      return 'hostQuips';
   }
 }

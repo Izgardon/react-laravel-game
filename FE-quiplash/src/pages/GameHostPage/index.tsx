@@ -9,11 +9,6 @@ import "./GameHostPage.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-interface Player {
-  id: number;
-  name: string;
-}
-
 function GameHostPage() {
   //General---------------------
   let navigate = useNavigate();
@@ -25,8 +20,14 @@ function GameHostPage() {
   const players = useSelector((state: AppState) => state.players);
 
   //States--------------------
-  const [playersList, setPlayersList] = useState<Player[]>([]);
-  const [answeredPlayersList, setAnsweredPlayersList] = useState<Player[]>([]);
+  const [playersList, setPlayersList] = useState<AppState["activePlayer"][]>(
+    []
+  );
+  const [answeredPlayersList, setAnsweredPlayersList] = useState<
+    AppState["activePlayer"][]
+  >([]);
+  const [quips, setQuips] = useState<any>([]);
+
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [round, setRound] = useState<number>(1);
 
@@ -62,6 +63,7 @@ function GameHostPage() {
     if (roomNumber) {
       channel = pusher.subscribe(roomNumber);
       //All binds
+      channel.bind("hostQuips", (data: any) => setHostQuips(data));
       channel.bind("playerAnswered", (data: any) => playerAnswered(data));
     } else {
       navigate("/");
@@ -72,22 +74,27 @@ function GameHostPage() {
 
   const assignQuips = async () => {
     let playerCount = players.length;
-    await axios
-      .post(`http://localhost:8000/api/quips`, {
-        playerCount,
-        roomNumber,
-      })
-      .then(() => startTimer(10));
+    let time = 10;
+    await axios.post(`http://localhost:8000/api/quips`, {
+      playerCount,
+      roomNumber,
+      time,
+    });
   };
 
-  const playerAnswered = (data) => {
+  const setHostQuips = (data: any) => {
+    setQuips(data.quips);
+    startTimer(data.time);
+  };
+
+  const playerAnswered = (data: any) => {
     setAnsweredPlayersList([...answeredPlayersList, data.player]);
     setPlayersList(playersList.filter((player) => player.id != data.player.id));
   };
 
   //Helper functions
 
-  const startTimer = (time) => {
+  const startTimer = (time: any) => {
     setTimeLeft(time);
   };
 

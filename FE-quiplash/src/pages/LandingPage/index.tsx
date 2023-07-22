@@ -6,6 +6,8 @@ import {
   setActivePlayer,
 } from "../../actions/appActions";
 import { useNavigate } from "react-router-dom";
+import AppState from "../../types/AppState";
+
 import axios from "axios";
 
 import "./LandingPage.css";
@@ -57,7 +59,7 @@ function LandingPage({}: Props) {
   };
 
   //Joining Room Logic
-  const [Code, setCode] = useState<any | null>("");
+  const [code, setCode] = useState<any | null>("");
   const [playerName, setPlayerName] = useState<any | null>("");
   const [roomError, setRoomError] = useState<string>("");
 
@@ -138,7 +140,7 @@ function LandingPage({}: Props) {
               <>
                 <Button
                   onClick={() => {
-                    createGame();
+                    loading ? "" : createGame();
                   }}
                   className="game-button"
                 >
@@ -165,7 +167,7 @@ function LandingPage({}: Props) {
                       placeholder="Enter your name"
                     />
                     <Form.Control
-                      value={Code}
+                      value={code}
                       onChange={onCodeChange}
                       onKeyDown={(evt) =>
                         (evt.key === "e" && evt.preventDefault()) ||
@@ -179,7 +181,7 @@ function LandingPage({}: Props) {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      joinRoom(Code);
+                      loading ? "" : joinRoom(code);
                     }}
                   >
                     Join
@@ -191,6 +193,7 @@ function LandingPage({}: Props) {
           </div>
           <ClipLoader
             loading={loading}
+            color="red"
             size={50}
             aria-label="Loading Spinner"
             data-testid="loader"
